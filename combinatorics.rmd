@@ -1,0 +1,171 @@
+---
+title: "Combinatorics reference"
+author: "Joe DiNoto"
+date: "9/27/2020"
+output: 
+  html_document: 
+    toc: yes
+    number_sections: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(ExPanDaR)
+```
+
+# Combinatorics Experiments
+
+## using expand() with fruits
+
+https://tidyr.tidyverse.org/reference/expand.html
+
+```{r}
+fruits <- tibble(
+  type   = c("apple", "orange", "apple", "orange", "orange", "orange"),
+  year   = c(2010, 2010, 2012, 2010, 2010, 2012),
+  size  =  factor(
+    c("XS", "S",  "M", "S", "S", "M"),
+    levels = c("XS", "S", "M", "L")
+  ),
+  weights = rnorm(6, as.numeric(size) + 2)
+)
+```
+
+```{r}
+# All possible combinations ---------------------------------------
+# Note that all defined, but not necessarily present, levels of the
+# factor variable `size` are retained.
+fruits %>% expand(type)
+```
+
+```{r}
+fruits %>% expand(type, size)
+```
+
+
+```{r}
+fruits %>% expand(type, size, year)
+```
+
+
+```{r}
+# Only combinations that already appear in the data ---------------
+fruits %>% expand(nesting(type))
+```
+
+```{r}
+fruits %>% expand(nesting(type, size))
+```
+
+```{r}
+fruits %>% expand(nesting(type, size, year))
+```
+
+```{r}
+# Other uses -------------------------------------------------------
+# Use with `full_seq()` to fill in values of continuous variables
+fruits %>% expand(type, size, full_seq(year, 1))
+```
+
+```{r}
+fruits %>% expand(type, size, 2010:2012)
+```
+
+```{r}
+# Use `anti_join()` to determine which observations are missing
+all <- fruits %>% expand(type, size, year)
+all
+```
+
+```{r}
+all %>% dplyr::anti_join(fruits)
+```
+
+```{r}
+# Use with `right_join()` to fill in missing rows
+fruits %>% dplyr::right_join(all)
+```
+
+## using expand() on mtcars
+
+https://www.rdocumentation.org/packages/tidyr/versions/0.8.3/topics/expand
+
+```{r}
+# NOT RUN {
+library(dplyr)
+# All possible combinations of vs & cyl, even those that aren't
+# present in the data
+expand(mtcars, vs, cyl)
+```
+
+```{r}
+# Only combinations of vs and cyl that appear in the data
+expand(mtcars, nesting(vs, cyl))
+```
+
+
+```{r}
+# Implicit missings ---------------------------------------------------------
+df <- tibble(
+  year   = c(2010, 2010, 2010, 2010, 2012, 2012, 2012),
+  qtr    = c(   1,    2,    3,    4,    1,    2,    3),
+  return = rnorm(7)
+)
+df %>% expand(year, qtr)
+df %>% expand(year = 2010:2012, qtr)
+df %>% expand(year = full_seq(year, 1), qtr)
+df %>% complete(year = full_seq(year, 1), qtr)
+```
+
+```{r}
+# Nesting -------------------------------------------------------------------
+# Each person was given one of two treatments, repeated three times
+# But some of the replications haven't happened yet, so we have
+# incomplete data:
+experiment <- tibble(
+  name = rep(c("Alex", "Robert", "Sam"), c(3, 2, 1)),
+  trt  = rep(c("a", "b", "a"), c(3, 2, 1)),
+  rep = c(1, 2, 3, 1, 2, 1),
+  measurment_1 = runif(6),
+  measurment_2 = runif(6)
+)
+```
+
+
+```{r}
+# We can figure out the complete set of data with expand()
+# Each person only gets one treatment, so we nest name and trt together:
+all <- experiment %>% expand(nesting(name, trt), rep)
+all
+```
+
+```{r}
+# We can use anti_join to figure out which observations are missing
+all %>% anti_join(experiment)
+```
+
+
+```{r}
+# And use right_join to add in the appropriate missing values to the
+# original data
+experiment %>% right_join(all)
+# Or use the complete() short-hand
+experiment %>% complete(nesting(name, trt), rep)
+```
+
+```{r}
+# Generate all combinations with expand():
+formulas <- list(
+  formula1 = Sepal.Length ~ Sepal.Width,
+  formula2 = Sepal.Length ~ Sepal.Width + Petal.Width,
+  formula3 = Sepal.Length ~ Sepal.Width + Petal.Width + Petal.Length
+)
+data <- split(iris, iris$Species)
+crossing(formula = formulas, data)
+# }
+```
