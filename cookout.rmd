@@ -14,13 +14,48 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Cookout Data
 
-```{r}
+## Packagees 
+```{r warning=FALSE, message=FALSE}
 library(tidyverse)
+library(dplyr)
+library(tibble)
 library(ExPanDaR) # allows for easy permutations
 ```
 
+## load the data
+```{r warning=FALSE}
+cookout <- read.csv("cookout.csv")  # read csv file
+cookout %>% as.tibble() # convert to tibble
+```
+
+## use expand() to find permutations
+```{r}
+# all unique combinations of names, food types and flavor strengths
+# nesting() outputs only combinations that already appear in the data
+flavor<- cookout %>% expand(nesting(Name, Food.Type, Flavor.Strength))
+flavor
+```
+## hamburgers
+```{r}
+# list of names who have 2 flavor strength preferences for hamburgers
+hamburger_names <- flavor %>% filter(Food.Type == "hamburger") %>%
+  count(Name, sort=TRUE) %>%
+  filter(n==2) %>%
+  count(Name) %>%
+  select(Name)
+hamburger_names
+```
+
+## Ice Cream
 
 ```{r}
-cookout <- read.csv("cookout.csv")  # read csv file
+# list of names who have 2 flavor strength preferences for ice cream
+ice_cream_names <- flavor %>% filter(Food.Type == "ice cream") %>%
+  count(Name, sort=TRUE) %>%
+  filter(n==2) %>%
+  count(Name) %>%
+  select(Name)
+ice_cream_names
 ```
+
 

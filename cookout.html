@@ -371,17 +371,89 @@ summary {
 
 <div id="cookout-data" class="section level1">
 <h1><span class="header-section-number">1</span> Cookout Data</h1>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ------------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.2     v purrr   0.3.4
-## v tibble  3.0.3     v dplyr   1.0.2
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.5.0</code></pre>
-<pre><code>## -- Conflicts ---------------------------------------------------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(ExPanDaR) # allows for easy permutations</code></pre>
-<pre class="r"><code>cookout &lt;- read.csv(&quot;cookout.csv&quot;)  # read csv file</code></pre>
+<div id="packagees" class="section level2">
+<h2><span class="header-section-number">1.1</span> Packagees</h2>
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
+library(tibble)
+library(ExPanDaR) # allows for easy permutations</code></pre>
+</div>
+<div id="load-the-data" class="section level2">
+<h2><span class="header-section-number">1.2</span> load the data</h2>
+<pre class="r"><code>cookout &lt;- read.csv(&quot;cookout.csv&quot;)  # read csv file
+cookout %&gt;% as.tibble() # convert to tibble</code></pre>
+<pre><code>## # A tibble: 56 x 4
+##    Name  Food.Type Flavor.Strength Toppings     
+##    &lt;chr&gt; &lt;chr&gt;     &lt;chr&gt;           &lt;chr&gt;        
+##  1 Joe   hamburger bland           katsup       
+##  2 Joe   hamburger medium          onions       
+##  3 Joe   hamburger bland           mayo         
+##  4 Joe   hamburger bland           lettuce      
+##  5 Joe   hamburger strong          hotsauce     
+##  6 Joe   ice cream bland           sprinkles    
+##  7 Joe   ice cream medium          hot chocolate
+##  8 Joe   ice cream strong          sour patch   
+##  9 Joe   ice cream medium          recees pieces
+## 10 Tom   hamburger bland           katsup       
+## # ... with 46 more rows</code></pre>
+</div>
+<div id="use-expand-to-find-permutations" class="section level2">
+<h2><span class="header-section-number">1.3</span> use expand() to find permutations</h2>
+<pre class="r"><code># all unique combinations of names, food types and flavor strengths
+# nesting() outputs only combinations that already appear in the data
+flavor&lt;- cookout %&gt;% expand(nesting(Name, Food.Type, Flavor.Strength))
+flavor</code></pre>
+<pre><code>## # A tibble: 30 x 3
+##    Name   Food.Type Flavor.Strength
+##    &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;          
+##  1 George hamburger bland          
+##  2 George hamburger medium         
+##  3 George ice cream medium         
+##  4 George ice cream strong         
+##  5 Jerry  hamburger bland          
+##  6 Jerry  hamburger strong         
+##  7 Jerry  ice cream bland          
+##  8 Jerry  ice cream medium         
+##  9 Joe    hamburger bland          
+## 10 Joe    hamburger medium         
+## # ... with 20 more rows</code></pre>
+</div>
+<div id="hamburgers" class="section level2">
+<h2><span class="header-section-number">1.4</span> hamburgers</h2>
+<pre class="r"><code># list of names who have 2 flavor strength preferences for hamburgers
+hamburger_names &lt;- flavor %&gt;% filter(Food.Type == &quot;hamburger&quot;) %&gt;%
+  count(Name, sort=TRUE) %&gt;%
+  filter(n==2) %&gt;%
+  count(Name) %&gt;%
+  select(Name)
+hamburger_names</code></pre>
+<pre><code>## # A tibble: 4 x 1
+##   Name  
+##   &lt;chr&gt; 
+## 1 George
+## 2 Jerry 
+## 3 Tom   
+## 4 Wanda</code></pre>
+</div>
+<div id="ice-cream" class="section level2">
+<h2><span class="header-section-number">1.5</span> Ice Cream</h2>
+<pre class="r"><code># list of names who have 2 flavor strength preferences for ice cream
+ice_cream_names &lt;- flavor %&gt;% filter(Food.Type == &quot;ice cream&quot;) %&gt;%
+  count(Name, sort=TRUE) %&gt;%
+  filter(n==2) %&gt;%
+  count(Name) %&gt;%
+  select(Name)
+ice_cream_names</code></pre>
+<pre><code>## # A tibble: 6 x 1
+##   Name  
+##   &lt;chr&gt; 
+## 1 George
+## 2 Jerry 
+## 3 Sam   
+## 4 Sofia 
+## 5 Tom   
+## 6 Wanda</code></pre>
+</div>
 </div>
 
 
