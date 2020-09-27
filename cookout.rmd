@@ -1,0 +1,26 @@
+---
+title: "Cookout Combinatorics"
+author: "Joe DiNoto"
+date: "9/27/2020"
+output: 
+  html_document: 
+    number_sections: yes
+    keep_md: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Cookout Data
+
+```{r}
+library(tidyverse)
+library(ExPanDaR) # allows for easy permutations
+```
+
+
+```{r}
+cookout <- read.csv("cookout.csv")  # read csv file
+```
+

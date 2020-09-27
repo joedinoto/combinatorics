@@ -1,0 +1,57 @@
+Name,Food Type,Flavor Strength,Toppings
+Joe,hamburger,bland,katsup
+Joe,hamburger,medium,onions
+Joe,hamburger,bland,mayo
+Joe,hamburger,bland,lettuce
+Joe,hamburger,strong,hotsauce
+Joe,ice cream,bland,sprinkles
+Joe,ice cream,medium,hot chocolate
+Joe,ice cream,strong,sour patch
+Joe,ice cream,medium,recees pieces
+Tom,hamburger,bland,katsup
+Tom,hamburger,bland,mayo
+Tom,hamburger,strong,chili flakes
+Tom,hamburger,strong,hotsauce
+Tom,ice cream,bland,sprinkles
+Tom,ice cream,bland,whipped cream
+Tom,ice cream,medium,cherry
+Tom,ice cream,medium,oreos
+Sam,hamburger,bland,katsup
+Sam,hamburger,medium,onions
+Sam,hamburger,medium,horseradish
+Sam,hamburger,bland,lettuce
+Sam,hamburger,strong,hotsauce
+Sam,ice cream,bland,sprinkles
+Sam,ice cream,medium,hot chocolate
+Sam,ice cream,medium,strawberries
+Sam,ice cream,medium,recees pieces
+Jerry,hamburger,strong,chili flakes
+Jerry,hamburger,bland,mayo
+Jerry,hamburger,bland,tomato
+Jerry,ice cream,bland,sprinkles
+Jerry,ice cream,bland,whipped cream
+Jerry,ice cream,medium,cherry
+Jerry,ice cream,medium,oreos
+George,hamburger,medium,onions
+George,hamburger,bland,mayo
+George,hamburger,bland,tomato
+George,ice cream,strong,warheads
+George,ice cream,strong,sour patch
+George,ice cream,medium,cherry
+George,ice cream,medium,oreos
+Wanda,hamburger,bland,tomato
+Wanda,hamburger,bland,katsup
+Wanda,hamburger,bland,lettuce
+Wanda,hamburger,strong,chili flakes
+Wanda,ice cream,bland,sprinkles
+Wanda,ice cream,bland,whipped cream
+Wanda,ice cream,strong,sour patch
+Wanda,ice cream,bland,pretzel
+Wanda,ice cream,strong,warheads
+Sofia,hamburger,strong,hotsauce
+Sofia,hamburger,strong,chili flakes
+Sofia,ice cream,strong,warheads
+Sofia,ice cream,strong,sour patch
+Sofia,ice cream,strong,pineapples
+Sofia,ice cream,bland,sprinkles
+Sofia,ice cream,bland,whipped cream
