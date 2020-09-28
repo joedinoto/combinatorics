@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Cookout Data
 
-## Packagees 
+## Packages 
 ```{r warning=FALSE, message=FALSE}
 library(tidyverse)
 library(dplyr)
@@ -58,4 +58,20 @@ ice_cream_names <- flavor %>% filter(Food.Type == "ice cream") %>%
 ice_cream_names
 ```
 
+
+```{r}
+#Filter the list to ice cream names with two flavor strength preferences
+hamburger_toppings <- cookout %>% filter(Food.Type == "hamburger") %>%
+  filter(Name %in% ice_cream_names$Name)
+hamburger_toppings
+```
+```{r}
+# Currently working on... how to find permutations of toppings across flavor strengths, by name. 
+# Desired output: George: onions, mayo | onions, tomato
+# Need to review expand() documentation
+# or write a script?
+hamburger_toppings %>% 
+  filter(Food.Type=="hamburger") %>%
+  expand(nesting(Name,Flavor.Strength, Toppings))
+```
 

@@ -12,7 +12,7 @@ output:
 
 # Cookout Data
 
-## Packagees 
+## Packages 
 
 ```r
 library(tidyverse)
@@ -117,4 +117,64 @@ ice_cream_names
 ## 6 Wanda
 ```
 
+
+
+```r
+#Filter the list to ice cream names with two flavor strength preferences
+hamburger_toppings <- cookout %>% filter(Food.Type == "hamburger") %>%
+  filter(Name %in% ice_cream_names$Name)
+hamburger_toppings
+```
+
+```
+##      Name Food.Type Flavor.Strength     Toppings
+## 1     Tom hamburger           bland       katsup
+## 2     Tom hamburger           bland         mayo
+## 3     Tom hamburger          strong chili flakes
+## 4     Tom hamburger          strong     hotsauce
+## 5     Sam hamburger           bland       katsup
+## 6     Sam hamburger          medium       onions
+## 7     Sam hamburger          medium  horseradish
+## 8     Sam hamburger           bland      lettuce
+## 9     Sam hamburger          strong     hotsauce
+## 10  Jerry hamburger          strong chili flakes
+## 11  Jerry hamburger           bland         mayo
+## 12  Jerry hamburger           bland       tomato
+## 13 George hamburger          medium       onions
+## 14 George hamburger           bland         mayo
+## 15 George hamburger           bland       tomato
+## 16  Wanda hamburger           bland       tomato
+## 17  Wanda hamburger           bland       katsup
+## 18  Wanda hamburger           bland      lettuce
+## 19  Wanda hamburger          strong chili flakes
+## 20  Sofia hamburger          strong     hotsauce
+## 21  Sofia hamburger          strong chili flakes
+```
+
+```r
+# Currently working on... how to find permutations of toppings across flavor strengths, by name. 
+# Desired output: George: onions, mayo | onions, tomato
+# Need to review expand() documentation
+# or write a script?
+hamburger_toppings %>% 
+  filter(Food.Type=="hamburger") %>%
+  expand(nesting(Name,Flavor.Strength, Toppings))
+```
+
+```
+## # A tibble: 21 x 3
+##    Name   Flavor.Strength Toppings    
+##    <chr>  <chr>           <chr>       
+##  1 George bland           mayo        
+##  2 George bland           tomato      
+##  3 George medium          onions      
+##  4 Jerry  bland           mayo        
+##  5 Jerry  bland           tomato      
+##  6 Jerry  strong          chili flakes
+##  7 Sam    bland           katsup      
+##  8 Sam    bland           lettuce     
+##  9 Sam    medium          horseradish 
+## 10 Sam    medium          onions      
+## # ... with 11 more rows
+```
 
