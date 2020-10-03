@@ -12,32 +12,15 @@ output:
 
 
 
-```r
-library(tidyverse)
-```
-
-```
-## -- Attaching packages ------------------------------------------------------------- tidyverse 1.3.0 --
-```
-
-```
-## v ggplot2 3.3.2     v purrr   0.3.4
-## v tibble  3.0.3     v dplyr   1.0.2
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.5.0
-```
-
-```
-## -- Conflicts ---------------------------------------------------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()
-```
-
-```r
-library(ExPanDaR)
-```
 
 # Combinatorics Experiments
+
+## Loading libraries 
+
+```r
+library(tidyverse)
+library(ExPanDaR) # allows for combinations and permutations
+```
 
 ## using expand() with fruits
 
@@ -54,8 +37,21 @@ fruits <- tibble(
   ),
   weights = rnorm(6, as.numeric(size) + 2)
 )
+fruits
 ```
 
+```
+## # A tibble: 6 x 4
+##   type    year size  weights
+##   <chr>  <dbl> <fct>   <dbl>
+## 1 apple   2010 XS       3.88
+## 2 orange  2010 S        4.34
+## 3 apple   2012 M        5.71
+## 4 orange  2010 S        6.18
+## 5 orange  2010 S        3.97
+## 6 orange  2012 M        6.95
+```
+### All possible combinations, whether they appear in the data or not.
 
 ```r
 # All possible combinations ---------------------------------------
@@ -119,7 +115,7 @@ fruits %>% expand(type, size, year)
 ## 16 orange L      2012
 ```
 
-
+### Only combinations that appear in the data. 
 
 ```r
 # Only combinations that already appear in the data ---------------
@@ -163,6 +159,8 @@ fruits %>% expand(nesting(type, size, year))
 ## 3 orange S      2010
 ## 4 orange M      2012
 ```
+
+### filling in values 
 
 
 ```r
@@ -209,6 +207,8 @@ fruits %>% expand(type, size, 2010:2012)
 ## 10 apple L            2010
 ## # ... with 14 more rows
 ```
+
+### find missing observations
 
 
 ```r
@@ -280,12 +280,12 @@ fruits %>% dplyr::right_join(all)
 ## # A tibble: 18 x 4
 ##    type    year size  weights
 ##    <chr>  <dbl> <fct>   <dbl>
-##  1 apple   2010 XS       3.24
-##  2 orange  2010 S        4.28
-##  3 apple   2012 M        2.76
-##  4 orange  2010 S        4.34
-##  5 orange  2010 S        4.77
-##  6 orange  2012 M        4.45
+##  1 apple   2010 XS       3.88
+##  2 orange  2010 S        4.34
+##  3 apple   2012 M        5.71
+##  4 orange  2010 S        6.18
+##  5 orange  2010 S        3.97
+##  6 orange  2012 M        6.95
 ##  7 apple   2012 XS      NA   
 ##  8 apple   2010 S       NA   
 ##  9 apple   2012 S       NA   
@@ -418,21 +418,23 @@ df %>% complete(year = full_seq(year, 1), qtr)
 
 ```
 ## # A tibble: 12 x 3
-##     year   qtr  return
-##    <dbl> <dbl>   <dbl>
-##  1  2010     1 -0.920 
-##  2  2010     2 -2.82  
-##  3  2010     3  0.555 
-##  4  2010     4 -0.0598
-##  5  2011     1 NA     
-##  6  2011     2 NA     
-##  7  2011     3 NA     
-##  8  2011     4 NA     
-##  9  2012     1  0.0814
-## 10  2012     2  0.921 
-## 11  2012     3  1.42  
+##     year   qtr return
+##    <dbl> <dbl>  <dbl>
+##  1  2010     1 -0.474
+##  2  2010     2  1.24 
+##  3  2010     3  0.283
+##  4  2010     4 -1.94 
+##  5  2011     1 NA    
+##  6  2011     2 NA    
+##  7  2011     3 NA    
+##  8  2011     4 NA    
+##  9  2012     1 -1.85 
+## 10  2012     2 -1.36 
+## 11  2012     3  2.36 
 ## 12  2012     4 NA
 ```
+
+## combinaions of treatments among patients
 
 
 ```r
@@ -447,6 +449,19 @@ experiment <- tibble(
   measurment_1 = runif(6),
   measurment_2 = runif(6)
 )
+experiment
+```
+
+```
+## # A tibble: 6 x 5
+##   name   trt     rep measurment_1 measurment_2
+##   <chr>  <chr> <dbl>        <dbl>        <dbl>
+## 1 Alex   a         1       0.0482        0.987
+## 2 Alex   a         2       0.802         0.316
+## 3 Alex   a         3       0.612         0.632
+## 4 Robert b         1       0.711         0.315
+## 5 Robert b         2       0.614         0.559
+## 6 Sam    a         1       0.529         0.290
 ```
 
 
@@ -508,12 +523,12 @@ experiment %>% right_join(all)
 ## # A tibble: 9 x 5
 ##   name   trt     rep measurment_1 measurment_2
 ##   <chr>  <chr> <dbl>        <dbl>        <dbl>
-## 1 Alex   a         1       0.181         0.725
-## 2 Alex   a         2       0.487         0.555
-## 3 Alex   a         3       0.0696        0.791
-## 4 Robert b         1       0.770         0.647
-## 5 Robert b         2       0.619         0.827
-## 6 Sam    a         1       0.631         0.319
+## 1 Alex   a         1       0.0482        0.987
+## 2 Alex   a         2       0.802         0.316
+## 3 Alex   a         3       0.612         0.632
+## 4 Robert b         1       0.711         0.315
+## 5 Robert b         2       0.614         0.559
+## 6 Sam    a         1       0.529         0.290
 ## 7 Robert b         3      NA            NA    
 ## 8 Sam    a         2      NA            NA    
 ## 9 Sam    a         3      NA            NA
@@ -528,13 +543,13 @@ experiment %>% complete(nesting(name, trt), rep)
 ## # A tibble: 9 x 5
 ##   name   trt     rep measurment_1 measurment_2
 ##   <chr>  <chr> <dbl>        <dbl>        <dbl>
-## 1 Alex   a         1       0.181         0.725
-## 2 Alex   a         2       0.487         0.555
-## 3 Alex   a         3       0.0696        0.791
-## 4 Robert b         1       0.770         0.647
-## 5 Robert b         2       0.619         0.827
+## 1 Alex   a         1       0.0482        0.987
+## 2 Alex   a         2       0.802         0.316
+## 3 Alex   a         3       0.612         0.632
+## 4 Robert b         1       0.711         0.315
+## 5 Robert b         2       0.614         0.559
 ## 6 Robert b         3      NA            NA    
-## 7 Sam    a         1       0.631         0.319
+## 7 Sam    a         1       0.529         0.290
 ## 8 Sam    a         2      NA            NA    
 ## 9 Sam    a         3      NA            NA
 ```

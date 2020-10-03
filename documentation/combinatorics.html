@@ -371,26 +371,28 @@ summary {
 <div id="TOC">
 <ul>
 <li><a href="#combinatorics-experiments"><span class="toc-section-number">1</span> Combinatorics Experiments</a><ul>
-<li><a href="#using-expand-with-fruits"><span class="toc-section-number">1.1</span> using expand() with fruits</a></li>
-<li><a href="#using-expand-on-mtcars"><span class="toc-section-number">1.2</span> using expand() on mtcars</a></li>
+<li><a href="#loading-libraries"><span class="toc-section-number">1.1</span> Loading libraries</a></li>
+<li><a href="#using-expand-with-fruits"><span class="toc-section-number">1.2</span> using expand() with fruits</a><ul>
+<li><a href="#all-possible-combinations-whether-they-appear-in-the-data-or-not."><span class="toc-section-number">1.2.1</span> All possible combinations, whether they appear in the data or not.</a></li>
+<li><a href="#only-combinations-that-appear-in-the-data."><span class="toc-section-number">1.2.2</span> Only combinations that appear in the data.</a></li>
+<li><a href="#filling-in-values"><span class="toc-section-number">1.2.3</span> filling in values</a></li>
+<li><a href="#find-missing-observations"><span class="toc-section-number">1.2.4</span> find missing observations</a></li>
+</ul></li>
+<li><a href="#using-expand-on-mtcars"><span class="toc-section-number">1.3</span> using expand() on mtcars</a></li>
+<li><a href="#combinaions-of-treatments-among-patients"><span class="toc-section-number">1.4</span> combinaions of treatments among patients</a></li>
 </ul></li>
 </ul>
 </div>
 
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages ------------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
-<pre><code>## v ggplot2 3.3.2     v purrr   0.3.4
-## v tibble  3.0.3     v dplyr   1.0.2
-## v tidyr   1.1.2     v stringr 1.4.0
-## v readr   1.3.1     v forcats 0.5.0</code></pre>
-<pre><code>## -- Conflicts ---------------------------------------------------------------- tidyverse_conflicts() --
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>library(ExPanDaR)</code></pre>
 <div id="combinatorics-experiments" class="section level1">
 <h1><span class="header-section-number">1</span> Combinatorics Experiments</h1>
+<div id="loading-libraries" class="section level2">
+<h2><span class="header-section-number">1.1</span> Loading libraries</h2>
+<pre class="r"><code>library(tidyverse)
+library(ExPanDaR) # allows for combinations and permutations</code></pre>
+</div>
 <div id="using-expand-with-fruits" class="section level2">
-<h2><span class="header-section-number">1.1</span> using expand() with fruits</h2>
+<h2><span class="header-section-number">1.2</span> using expand() with fruits</h2>
 <p><a href="https://tidyr.tidyverse.org/reference/expand.html" class="uri">https://tidyr.tidyverse.org/reference/expand.html</a></p>
 <pre class="r"><code>fruits &lt;- tibble(
   type   = c(&quot;apple&quot;, &quot;orange&quot;, &quot;apple&quot;, &quot;orange&quot;, &quot;orange&quot;, &quot;orange&quot;),
@@ -400,7 +402,19 @@ summary {
     levels = c(&quot;XS&quot;, &quot;S&quot;, &quot;M&quot;, &quot;L&quot;)
   ),
   weights = rnorm(6, as.numeric(size) + 2)
-)</code></pre>
+)
+fruits</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   type    year size  weights
+##   &lt;chr&gt;  &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;
+## 1 apple   2010 XS       3.88
+## 2 orange  2010 S        4.34
+## 3 apple   2012 M        5.71
+## 4 orange  2010 S        6.18
+## 5 orange  2010 S        3.97
+## 6 orange  2012 M        6.95</code></pre>
+<div id="all-possible-combinations-whether-they-appear-in-the-data-or-not." class="section level3">
+<h3><span class="header-section-number">1.2.1</span> All possible combinations, whether they appear in the data or not.</h3>
 <pre class="r"><code># All possible combinations ---------------------------------------
 # Note that all defined, but not necessarily present, levels of the
 # factor variable `size` are retained.
@@ -442,6 +456,9 @@ fruits %&gt;% expand(type)</code></pre>
 ## 14 orange M      2012
 ## 15 orange L      2010
 ## 16 orange L      2012</code></pre>
+</div>
+<div id="only-combinations-that-appear-in-the-data." class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Only combinations that appear in the data.</h3>
 <pre class="r"><code># Only combinations that already appear in the data ---------------
 fruits %&gt;% expand(nesting(type))</code></pre>
 <pre><code>## # A tibble: 2 x 1
@@ -465,6 +482,9 @@ fruits %&gt;% expand(nesting(type))</code></pre>
 ## 2 apple  M      2012
 ## 3 orange S      2010
 ## 4 orange M      2012</code></pre>
+</div>
+<div id="filling-in-values" class="section level3">
+<h3><span class="header-section-number">1.2.3</span> filling in values</h3>
 <pre class="r"><code># Other uses -------------------------------------------------------
 # Use with `full_seq()` to fill in values of continuous variables
 fruits %&gt;% expand(type, size, full_seq(year, 1))</code></pre>
@@ -497,6 +517,9 @@ fruits %&gt;% expand(type, size, full_seq(year, 1))</code></pre>
 ##  9 apple M            2012
 ## 10 apple L            2010
 ## # ... with 14 more rows</code></pre>
+</div>
+<div id="find-missing-observations" class="section level3">
+<h3><span class="header-section-number">1.2.4</span> find missing observations</h3>
 <pre class="r"><code># Use `anti_join()` to determine which observations are missing
 all &lt;- fruits %&gt;% expand(type, size, year)
 all</code></pre>
@@ -542,12 +565,12 @@ fruits %&gt;% dplyr::right_join(all)</code></pre>
 <pre><code>## # A tibble: 18 x 4
 ##    type    year size  weights
 ##    &lt;chr&gt;  &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;
-##  1 apple   2010 XS       3.24
-##  2 orange  2010 S        4.28
-##  3 apple   2012 M        2.76
-##  4 orange  2010 S        4.34
-##  5 orange  2010 S        4.77
-##  6 orange  2012 M        4.45
+##  1 apple   2010 XS       3.88
+##  2 orange  2010 S        4.34
+##  3 apple   2012 M        5.71
+##  4 orange  2010 S        6.18
+##  5 orange  2010 S        3.97
+##  6 orange  2012 M        6.95
 ##  7 apple   2012 XS      NA   
 ##  8 apple   2010 S       NA   
 ##  9 apple   2012 S       NA   
@@ -561,8 +584,9 @@ fruits %&gt;% dplyr::right_join(all)</code></pre>
 ## 17 orange  2010 L       NA   
 ## 18 orange  2012 L       NA</code></pre>
 </div>
+</div>
 <div id="using-expand-on-mtcars" class="section level2">
-<h2><span class="header-section-number">1.2</span> using expand() on mtcars</h2>
+<h2><span class="header-section-number">1.3</span> using expand() on mtcars</h2>
 <p><a href="https://www.rdocumentation.org/packages/tidyr/versions/0.8.3/topics/expand" class="uri">https://www.rdocumentation.org/packages/tidyr/versions/0.8.3/topics/expand</a></p>
 <pre class="r"><code># NOT RUN {
 library(dplyr)
@@ -640,20 +664,23 @@ df %&gt;% expand(year, qtr)</code></pre>
 ## 12  2012     4</code></pre>
 <pre class="r"><code>df %&gt;% complete(year = full_seq(year, 1), qtr)</code></pre>
 <pre><code>## # A tibble: 12 x 3
-##     year   qtr  return
-##    &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
-##  1  2010     1 -0.920 
-##  2  2010     2 -2.82  
-##  3  2010     3  0.555 
-##  4  2010     4 -0.0598
-##  5  2011     1 NA     
-##  6  2011     2 NA     
-##  7  2011     3 NA     
-##  8  2011     4 NA     
-##  9  2012     1  0.0814
-## 10  2012     2  0.921 
-## 11  2012     3  1.42  
+##     year   qtr return
+##    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+##  1  2010     1 -0.474
+##  2  2010     2  1.24 
+##  3  2010     3  0.283
+##  4  2010     4 -1.94 
+##  5  2011     1 NA    
+##  6  2011     2 NA    
+##  7  2011     3 NA    
+##  8  2011     4 NA    
+##  9  2012     1 -1.85 
+## 10  2012     2 -1.36 
+## 11  2012     3  2.36 
 ## 12  2012     4 NA</code></pre>
+</div>
+<div id="combinaions-of-treatments-among-patients" class="section level2">
+<h2><span class="header-section-number">1.4</span> combinaions of treatments among patients</h2>
 <pre class="r"><code># Nesting -------------------------------------------------------------------
 # Each person was given one of two treatments, repeated three times
 # But some of the replications haven&#39;t happened yet, so we have
@@ -664,7 +691,17 @@ experiment &lt;- tibble(
   rep = c(1, 2, 3, 1, 2, 1),
   measurment_1 = runif(6),
   measurment_2 = runif(6)
-)</code></pre>
+)
+experiment</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##   name   trt     rep measurment_1 measurment_2
+##   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1 Alex   a         1       0.0482        0.987
+## 2 Alex   a         2       0.802         0.316
+## 3 Alex   a         3       0.612         0.632
+## 4 Robert b         1       0.711         0.315
+## 5 Robert b         2       0.614         0.559
+## 6 Sam    a         1       0.529         0.290</code></pre>
 <pre class="r"><code># We can figure out the complete set of data with expand()
 # Each person only gets one treatment, so we nest name and trt together:
 all &lt;- experiment %&gt;% expand(nesting(name, trt), rep)
@@ -697,12 +734,12 @@ experiment %&gt;% right_join(all)</code></pre>
 <pre><code>## # A tibble: 9 x 5
 ##   name   trt     rep measurment_1 measurment_2
 ##   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Alex   a         1       0.181         0.725
-## 2 Alex   a         2       0.487         0.555
-## 3 Alex   a         3       0.0696        0.791
-## 4 Robert b         1       0.770         0.647
-## 5 Robert b         2       0.619         0.827
-## 6 Sam    a         1       0.631         0.319
+## 1 Alex   a         1       0.0482        0.987
+## 2 Alex   a         2       0.802         0.316
+## 3 Alex   a         3       0.612         0.632
+## 4 Robert b         1       0.711         0.315
+## 5 Robert b         2       0.614         0.559
+## 6 Sam    a         1       0.529         0.290
 ## 7 Robert b         3      NA            NA    
 ## 8 Sam    a         2      NA            NA    
 ## 9 Sam    a         3      NA            NA</code></pre>
@@ -711,13 +748,13 @@ experiment %&gt;% complete(nesting(name, trt), rep)</code></pre>
 <pre><code>## # A tibble: 9 x 5
 ##   name   trt     rep measurment_1 measurment_2
 ##   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
-## 1 Alex   a         1       0.181         0.725
-## 2 Alex   a         2       0.487         0.555
-## 3 Alex   a         3       0.0696        0.791
-## 4 Robert b         1       0.770         0.647
-## 5 Robert b         2       0.619         0.827
+## 1 Alex   a         1       0.0482        0.987
+## 2 Alex   a         2       0.802         0.316
+## 3 Alex   a         3       0.612         0.632
+## 4 Robert b         1       0.711         0.315
+## 5 Robert b         2       0.614         0.559
 ## 6 Robert b         3      NA            NA    
-## 7 Sam    a         1       0.631         0.319
+## 7 Sam    a         1       0.529         0.290
 ## 8 Sam    a         2      NA            NA    
 ## 9 Sam    a         3      NA            NA</code></pre>
 <pre class="r"><code># Generate all combinations with expand():
