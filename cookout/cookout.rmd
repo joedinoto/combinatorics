@@ -13,30 +13,42 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Cookout Data
+# Cookout Combinatorics Problem
 
-## Packages 
+## Question 
+For a given food type, what is the most common combination of toppings across two flavor strenghts, limited to people who have two (and only two) flavor strength preferences?
+
+Video link explaining the problem:  https://youtu.be/Wu8Gf963jr8
+
+## Packages & loading data
 ```{r warning=FALSE, message=FALSE}
-library(tidyverse)
+library(tidyverse) 
 library(ExPanDaR) # allows for easy permutations
-```
-
-## load the data
-```{r warning=FALSE}
+# load the data
 cookout <- read.csv("cookout.csv")  # read csv file
-cookout %>% tibble() # convert to tibble
-# cookout<-cookout %>% mutate_at(vars(Food.Type,Flavor.Strength), factor)
-cookout
+cookout %>% tibble() %>%  arrange(Name,Food.Type,Flavor.Strength) # convert to tibble
 ```
+For instance, George prefers bland and medium hamburger toppings. His hamburger flavor combinations acros those two flavor strenghts would be:
+
+ * mayo & onions
+ * tomato & onions
+
+Note that mayo & tomato are not a valid combinations because they are both bland flavors. George likes medium and strong ice cream toppings so his ice cream flavor combinations would be
+
+ * cherry & warheads
+ * cherry & sour patch
+ * oreos & warheads
+ * oreos & sour patch
+
+Similarly, cherry & oreos and warheads & sour patch are invalid combinations because they are within the same flavor strength.
 
 ## use expand() to find permutations
 ```{r}
 # all unique combinations of names, food types and flavor strengths
 # nesting() outputs only combinations that already appear in the data
 flavor<- cookout %>% expand(nesting(Name, Food.Type, Flavor.Strength))
-flavor
 ```
-## hamburgers 2 flavor strength preferences
+
 ```{r}
 # list of names who have 2 flavor strength preferences for hamburgers
 hamburger_names <- flavor %>% filter(Food.Type == "hamburger") %>%
@@ -46,8 +58,6 @@ hamburger_names <- flavor %>% filter(Food.Type == "hamburger") %>%
   select(Name)
 hamburger_names
 ```
-
-## Ice Cream 2 flavor strength preferences
 
 ```{r}
 # list of names who have 2 flavor strength preferences for ice cream
@@ -59,34 +69,42 @@ ice_cream_names <- flavor %>% filter(Food.Type == "ice cream") %>%
 ice_cream_names
 ```
 
-
 ```{r}
 #Filter the list to hamburger names with two flavor strength preferences
-hamburger_toppings <- cookout %>% filter(Food.Type == "hamburger") %>%
-  filter(Name %in% ice_cream_names$Name)
+hamburger_toppings <- cookout %>% 
+  filter(Food.Type == "hamburger") %>%
+  filter(Name %in% hamburger_names$Name)
 hamburger_toppings
 ```
 
-## Two flavor strengths for Hamburgers
+```{r}
+# Filter the list to ice cream names with two flavor strength preferences
+ice_cream_toppings <- cookout %>%
+  filter(Food.Type == "ice cream") %>%
+  filter(Name %in% ice_cream_names$Name)
+ice_cream_toppings
+```
+
+
+## Flavor strength combinations for Hamburgers
 
 ```{r}
+hamburger_toppings %>% 
+  arrange(Toppings) # sorts toppings a to z so we don't have xy yx problems when counting combinations.
+
 top_vec2<-c() # initializes blank vector
 
-cookout <-cookout %>% filter(Name %in% hamburger_toppings$Name) %>% 
-  filter(Food.Type=="hamburger") %>%
-  arrange(Name,Food.Type,Flavor.Strength,Toppings) # sorts toppings a to z so we don't have xy yx problems.
-
-for(k in 1:(nrow(cookout)-1)){
-  for(i in (k+1):(nrow(cookout))){
+for(k in 1:(nrow(hamburger_toppings)-1)){
+  for(i in (k+1):(nrow(hamburger_toppings))){
   if(
-    (cookout$Name[k]==cookout$Name[i]) && 
-    (cookout$Food.Type[k] == cookout$Food.Type[i]) && 
-    (cookout$Flavor.Strength[k] != cookout$Flavor.Strength[i])
+    (hamburger_toppings$Name[k]==hamburger_toppings$Name[i]) && 
+    # (hamburger_toppings$Food.Type[k] == hamburger_toppings$Food.Type[i]) && 
+    (hamburger_toppings$Flavor.Strength[k] != hamburger_toppings$Flavor.Strength[i])
     ){
     z <- data.frame(
-      name = c(cookout$Name[k]),
-      food = c(cookout$Food.Type[k]),
-      combo = c(paste(cookout$Toppings[k],cookout$Toppings[i],sep=",")))
+      name = c(hamburger_toppings$Name[k]),
+      food = c(hamburger_toppings$Food.Type[k]),
+      combo = c(paste(hamburger_toppings$Toppings[k],hamburger_toppings$Toppings[i],sep=",")))
     top_vec2 <- rbind(top_vec2,z)
     }
   }
@@ -101,27 +119,42 @@ top_vec2 %>%
   tibble()%>% 
   group_by(food,combo) %>% 
   summarise(count=n()) %>%
-  arrange(desc(count)) %>%
-  filter(count>1)
+  arrange(desc(count)) # %>%
+  # filter(count>1) # Filter any combination that appears more than once
 ```
-```{r}
-cookout %>% arrange(Name,Food.Type,Flavor.Strength,Toppings)
-```
-## Misc Notes and such 
+
+## Flavor strength combinations for Ice Cream
 
 ```{r}
+ice_cream_toppings %>% 
+  arrange(Toppings) # sorts toppings a to z so we don't have xy yx problems when counting combinations.
 
-# sets up counter for names
-# unique_names <- unique(cookout$Name)
-# n <- length(unique_names) 
-# nrow(cookout) # number of rows in the cookout tibble
+top_vec2<-c() # initializes blank vector
 
-    #testing purposes
-    #x <- paste(cookout$Name[k],cookout$Toppings[k],k,cookout$Toppings[i],i,sep=",")
-    #top_vec <- append(top_vec,x)
-    # This will give me a vector of (food type, combos within that food type)
-    #y <- paste(cookout$Food.Type[k],cookout$Toppings[k],cookout$Toppings[i],sep=",")
-    #top_vec <- append(top_vec,y)
-    #let's make this a proper tibble?
+for(k in 1:(nrow(ice_cream_toppings)-1)){
+  for(i in (k+1):(nrow(ice_cream_toppings))){
+  if(
+    (ice_cream_toppings$Name[k]==ice_cream_toppings$Name[i]) && 
+    # (ice_cream_toppings$Food.Type[k] == ice_cream_toppings$Food.Type[i]) && 
+    (ice_cream_toppings$Flavor.Strength[k] != ice_cream_toppings$Flavor.Strength[i])
+    ){
+    z <- data.frame(
+      name = c(ice_cream_toppings$Name[k]),
+      food = c(ice_cream_toppings$Food.Type[k]),
+      combo = c(paste(ice_cream_toppings$Toppings[k],ice_cream_toppings$Toppings[i],sep=",")))
+    top_vec2 <- rbind(top_vec2,z)
+    }
+  }
+}
 ```
 
+## let's look at our results for Ice Cream!
+
+```{r}
+top_vec2 %>% 
+  tibble()%>% 
+  group_by(food,combo) %>% 
+  summarise(count=n()) %>%
+  arrange(desc(count)) # %>%
+  # filter(count>1) # Filter any combination that appears more than once
+```
