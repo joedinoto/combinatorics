@@ -91,15 +91,21 @@ for(nombre in cookout$Name){
 print(k)
 ```
 ```{r}
-nrow(cookout)
-top_vec<-c()
+# sets up counter for names
+unique_names <- unique(cookout$Name)
+n <- length(unique_names) 
+
+nrow(cookout) # number of rows in the cookout tibble
+top_vec<-c() # initializes blank vector
+
+# This looping structure works for Joe/Hamburgers... now to generalize!
 for(k in 1:4){
-  for(i in 2:5){
+  for(i in (k+1):5){
   if(cookout$Flavor.Strength[k] != cookout$Flavor.Strength[i]){
-    x <- paste(cookout$Toppings[k],cookout$Toppings[i],sep=",")
+    x <- paste(cookout$Toppings[k],k,cookout$Toppings[i],i,sep=",")
     top_vec <- append(top_vec,x)
+    }
   }
-}
 }
 
 toppings_vector<- top_vec %>% tibble()

@@ -40,6 +40,27 @@ foo %>%
 
 ```r
 cookout <- read.csv("cookout.csv")  # read csv file
+cookout %>% tibble() # convert to tibble
+```
+
+```
+## # A tibble: 56 x 4
+##    Name  Food.Type Flavor.Strength Toppings     
+##    <chr> <chr>     <chr>           <chr>        
+##  1 Joe   hamburger bland           katsup       
+##  2 Joe   hamburger medium          onions       
+##  3 Joe   hamburger bland           mayo         
+##  4 Joe   hamburger bland           lettuce      
+##  5 Joe   hamburger strong          hotsauce     
+##  6 Joe   ice cream bland           sprinkles    
+##  7 Joe   ice cream medium          hot chocolate
+##  8 Joe   ice cream strong          sour patch   
+##  9 Joe   ice cream medium          recees pieces
+## 10 Tom   hamburger bland           katsup       
+## # ... with 46 more rows
+```
+
+```r
 cookout %>% mutate_at(vars(Food.Type,Flavor.Strength), factor)
 ```
 
@@ -104,7 +125,6 @@ cookout %>% mutate_at(vars(Food.Type,Flavor.Strength), factor)
 ```
 
 ```r
-# cookout %>% as.tibble() # convert to tibble
 cookout
 ```
 
@@ -243,7 +263,7 @@ ice_cream_names
 
 
 ```r
-#Filter the list to ice cream names with two flavor strength preferences
+#Filter the list to hamburger names with two flavor strength preferences
 hamburger_toppings <- cookout %>% filter(Food.Type == "hamburger") %>%
   filter(Name %in% ice_cream_names$Name)
 hamburger_toppings
@@ -299,5 +319,124 @@ hamburger_toppings %>%
 ##  9 Sam    medium          horseradish 
 ## 10 Sam    medium          onions      
 ## # ... with 11 more rows
+```
+
+
+```r
+k<-0
+for(nombre in cookout$Name){
+  k = k+1
+}
+print(k)
+```
+
+```
+## [1] 56
+```
+
+```r
+# sets up counter for names
+unique_names <- unique(cookout$Name)
+n <- length(unique_names) 
+
+nrow(cookout) # number of rows in the cookout tibble
+```
+
+```
+## [1] 56
+```
+
+```r
+top_vec<-c() # initializes blank vector
+
+# This looping structure works for Joe/Hamburgers... now to generalize!
+for(k in 1:4){
+  for(i in (k+1):5){
+  if(cookout$Flavor.Strength[k] != cookout$Flavor.Strength[i]){
+    x <- paste(cookout$Toppings[k],k,cookout$Toppings[i],i,sep=",")
+    top_vec <- append(top_vec,x)
+    }
+  }
+}
+
+toppings_vector<- top_vec %>% tibble()
+toppings_vector
+```
+
+```
+## # A tibble: 7 x 1
+##   .                   
+##   <chr>               
+## 1 katsup,1,onions,2   
+## 2 katsup,1,hotsauce,5 
+## 3 onions,2,mayo,3     
+## 4 onions,2,lettuce,4  
+## 5 onions,2,hotsauce,5 
+## 6 mayo,3,hotsauce,5   
+## 7 lettuce,4,hotsauce,5
+```
+
+```r
+cookout
+```
+
+```
+##      Name Food.Type Flavor.Strength      Toppings
+## 1     Joe hamburger           bland        katsup
+## 2     Joe hamburger          medium        onions
+## 3     Joe hamburger           bland          mayo
+## 4     Joe hamburger           bland       lettuce
+## 5     Joe hamburger          strong      hotsauce
+## 6     Joe ice cream           bland     sprinkles
+## 7     Joe ice cream          medium hot chocolate
+## 8     Joe ice cream          strong    sour patch
+## 9     Joe ice cream          medium recees pieces
+## 10    Tom hamburger           bland        katsup
+## 11    Tom hamburger           bland          mayo
+## 12    Tom hamburger          strong  chili flakes
+## 13    Tom hamburger          strong      hotsauce
+## 14    Tom ice cream           bland     sprinkles
+## 15    Tom ice cream           bland whipped cream
+## 16    Tom ice cream          medium        cherry
+## 17    Tom ice cream          medium         oreos
+## 18    Sam hamburger           bland        katsup
+## 19    Sam hamburger          medium        onions
+## 20    Sam hamburger          medium   horseradish
+## 21    Sam hamburger           bland       lettuce
+## 22    Sam hamburger          strong      hotsauce
+## 23    Sam ice cream           bland     sprinkles
+## 24    Sam ice cream          medium hot chocolate
+## 25    Sam ice cream          medium  strawberries
+## 26    Sam ice cream          medium recees pieces
+## 27  Jerry hamburger          strong  chili flakes
+## 28  Jerry hamburger           bland          mayo
+## 29  Jerry hamburger           bland        tomato
+## 30  Jerry ice cream           bland     sprinkles
+## 31  Jerry ice cream           bland whipped cream
+## 32  Jerry ice cream          medium        cherry
+## 33  Jerry ice cream          medium         oreos
+## 34 George hamburger          medium        onions
+## 35 George hamburger           bland          mayo
+## 36 George hamburger           bland        tomato
+## 37 George ice cream          strong      warheads
+## 38 George ice cream          strong    sour patch
+## 39 George ice cream          medium        cherry
+## 40 George ice cream          medium         oreos
+## 41  Wanda hamburger           bland        tomato
+## 42  Wanda hamburger           bland        katsup
+## 43  Wanda hamburger           bland       lettuce
+## 44  Wanda hamburger          strong  chili flakes
+## 45  Wanda ice cream           bland     sprinkles
+## 46  Wanda ice cream           bland whipped cream
+## 47  Wanda ice cream          strong    sour patch
+## 48  Wanda ice cream           bland       pretzel
+## 49  Wanda ice cream          strong      warheads
+## 50  Sofia hamburger          strong      hotsauce
+## 51  Sofia hamburger          strong  chili flakes
+## 52  Sofia ice cream          strong      warheads
+## 53  Sofia ice cream          strong    sour patch
+## 54  Sofia ice cream          strong    pineapples
+## 55  Sofia ice cream           bland     sprinkles
+## 56  Sofia ice cream           bland whipped cream
 ```
 
