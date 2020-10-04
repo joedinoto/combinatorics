@@ -368,6 +368,20 @@ summary {
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#cookout-data"><span class="toc-section-number">1</span> Cookout Data</a><ul>
+<li><a href="#packages"><span class="toc-section-number">1.1</span> Packages</a></li>
+<li><a href="#load-the-data"><span class="toc-section-number">1.2</span> load the data</a></li>
+<li><a href="#use-expand-to-find-permutations"><span class="toc-section-number">1.3</span> use expand() to find permutations</a></li>
+<li><a href="#hamburgers-2-flavor-strength-preferences"><span class="toc-section-number">1.4</span> hamburgers 2 flavor strength preferences</a></li>
+<li><a href="#ice-cream-2-flavor-strength-preferences"><span class="toc-section-number">1.5</span> Ice Cream 2 flavor strength preferences</a></li>
+<li><a href="#two-flavor-strengths-for-hamburgers"><span class="toc-section-number">1.6</span> Two flavor strengths for Hamburgers</a></li>
+<li><a href="#lets-look-at-our-results"><span class="toc-section-number">1.7</span> let’s look at our results!</a></li>
+<li><a href="#misc-notes-and-such"><span class="toc-section-number">1.8</span> Misc Notes and such</a></li>
+</ul></li>
+</ul>
+</div>
 
 <div id="cookout-data" class="section level1">
 <h1><span class="header-section-number">1</span> Cookout Data</h1>
@@ -375,15 +389,6 @@ summary {
 <h2><span class="header-section-number">1.1</span> Packages</h2>
 <pre class="r"><code>library(tidyverse)
 library(ExPanDaR) # allows for easy permutations</code></pre>
-<pre class="r"><code>foo &lt;- tibble(x = letters[1:3], y = LETTERS[4:6], z=1:3)
-foo %&gt;% 
-  mutate_at(vars(x, y), factor)</code></pre>
-<pre><code>## # A tibble: 3 x 3
-##   x     y         z
-##   &lt;fct&gt; &lt;fct&gt; &lt;int&gt;
-## 1 a     D         1
-## 2 b     E         2
-## 3 c     F         3</code></pre>
 </div>
 <div id="load-the-data" class="section level2">
 <h2><span class="header-section-number">1.2</span> load the data</h2>
@@ -403,65 +408,8 @@ cookout %&gt;% tibble() # convert to tibble</code></pre>
 ##  9 Joe   ice cream medium          recees pieces
 ## 10 Tom   hamburger bland           katsup       
 ## # ... with 46 more rows</code></pre>
-<pre class="r"><code>cookout %&gt;% mutate_at(vars(Food.Type,Flavor.Strength), factor)</code></pre>
-<pre><code>##      Name Food.Type Flavor.Strength      Toppings
-## 1     Joe hamburger           bland        katsup
-## 2     Joe hamburger          medium        onions
-## 3     Joe hamburger           bland          mayo
-## 4     Joe hamburger           bland       lettuce
-## 5     Joe hamburger          strong      hotsauce
-## 6     Joe ice cream           bland     sprinkles
-## 7     Joe ice cream          medium hot chocolate
-## 8     Joe ice cream          strong    sour patch
-## 9     Joe ice cream          medium recees pieces
-## 10    Tom hamburger           bland        katsup
-## 11    Tom hamburger           bland          mayo
-## 12    Tom hamburger          strong  chili flakes
-## 13    Tom hamburger          strong      hotsauce
-## 14    Tom ice cream           bland     sprinkles
-## 15    Tom ice cream           bland whipped cream
-## 16    Tom ice cream          medium        cherry
-## 17    Tom ice cream          medium         oreos
-## 18    Sam hamburger           bland        katsup
-## 19    Sam hamburger          medium        onions
-## 20    Sam hamburger          medium   horseradish
-## 21    Sam hamburger           bland       lettuce
-## 22    Sam hamburger          strong      hotsauce
-## 23    Sam ice cream           bland     sprinkles
-## 24    Sam ice cream          medium hot chocolate
-## 25    Sam ice cream          medium  strawberries
-## 26    Sam ice cream          medium recees pieces
-## 27  Jerry hamburger          strong  chili flakes
-## 28  Jerry hamburger           bland          mayo
-## 29  Jerry hamburger           bland        tomato
-## 30  Jerry ice cream           bland     sprinkles
-## 31  Jerry ice cream           bland whipped cream
-## 32  Jerry ice cream          medium        cherry
-## 33  Jerry ice cream          medium         oreos
-## 34 George hamburger          medium        onions
-## 35 George hamburger           bland          mayo
-## 36 George hamburger           bland        tomato
-## 37 George ice cream          strong      warheads
-## 38 George ice cream          strong    sour patch
-## 39 George ice cream          medium        cherry
-## 40 George ice cream          medium         oreos
-## 41  Wanda hamburger           bland        tomato
-## 42  Wanda hamburger           bland        katsup
-## 43  Wanda hamburger           bland       lettuce
-## 44  Wanda hamburger          strong  chili flakes
-## 45  Wanda ice cream           bland     sprinkles
-## 46  Wanda ice cream           bland whipped cream
-## 47  Wanda ice cream          strong    sour patch
-## 48  Wanda ice cream           bland       pretzel
-## 49  Wanda ice cream          strong      warheads
-## 50  Sofia hamburger          strong      hotsauce
-## 51  Sofia hamburger          strong  chili flakes
-## 52  Sofia ice cream          strong      warheads
-## 53  Sofia ice cream          strong    sour patch
-## 54  Sofia ice cream          strong    pineapples
-## 55  Sofia ice cream           bland     sprinkles
-## 56  Sofia ice cream           bland whipped cream</code></pre>
-<pre class="r"><code>cookout</code></pre>
+<pre class="r"><code>cookout&lt;-cookout %&gt;% mutate_at(vars(Food.Type,Flavor.Strength), factor)
+cookout</code></pre>
 <pre><code>##      Name Food.Type Flavor.Strength      Toppings
 ## 1     Joe hamburger           bland        katsup
 ## 2     Joe hamburger          medium        onions
@@ -528,7 +476,7 @@ flavor&lt;- cookout %&gt;% expand(nesting(Name, Food.Type, Flavor.Strength))
 flavor</code></pre>
 <pre><code>## # A tibble: 30 x 3
 ##    Name   Food.Type Flavor.Strength
-##    &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;          
+##    &lt;chr&gt;  &lt;fct&gt;     &lt;fct&gt;          
 ##  1 George hamburger bland          
 ##  2 George hamburger medium         
 ##  3 George ice cream medium         
@@ -541,8 +489,8 @@ flavor</code></pre>
 ## 10 Joe    hamburger medium         
 ## # ... with 20 more rows</code></pre>
 </div>
-<div id="hamburgers" class="section level2">
-<h2><span class="header-section-number">1.4</span> hamburgers</h2>
+<div id="hamburgers-2-flavor-strength-preferences" class="section level2">
+<h2><span class="header-section-number">1.4</span> hamburgers 2 flavor strength preferences</h2>
 <pre class="r"><code># list of names who have 2 flavor strength preferences for hamburgers
 hamburger_names &lt;- flavor %&gt;% filter(Food.Type == &quot;hamburger&quot;) %&gt;%
   count(Name, sort=TRUE) %&gt;%
@@ -558,8 +506,8 @@ hamburger_names</code></pre>
 ## 3 Tom   
 ## 4 Wanda</code></pre>
 </div>
-<div id="ice-cream" class="section level2">
-<h2><span class="header-section-number">1.5</span> Ice Cream</h2>
+<div id="ice-cream-2-flavor-strength-preferences" class="section level2">
+<h2><span class="header-section-number">1.5</span> Ice Cream 2 flavor strength preferences</h2>
 <pre class="r"><code># list of names who have 2 flavor strength preferences for ice cream
 ice_cream_names &lt;- flavor %&gt;% filter(Food.Type == &quot;ice cream&quot;) %&gt;%
   count(Name, sort=TRUE) %&gt;%
@@ -602,121 +550,125 @@ hamburger_toppings</code></pre>
 ## 19  Wanda hamburger          strong chili flakes
 ## 20  Sofia hamburger          strong     hotsauce
 ## 21  Sofia hamburger          strong chili flakes</code></pre>
-<pre class="r"><code># Currently working on... how to find permutations of toppings across flavor strengths, by name. 
-# Desired output: George: onions, mayo | onions, tomato
-# Need to review expand() documentation
-# or write a script?
-hamburger_toppings %&gt;% 
-  filter(Food.Type==&quot;hamburger&quot;) %&gt;%
-  expand(nesting(Name,Flavor.Strength, Toppings))</code></pre>
-<pre><code>## # A tibble: 21 x 3
-##    Name   Flavor.Strength Toppings    
-##    &lt;chr&gt;  &lt;chr&gt;           &lt;chr&gt;       
-##  1 George bland           mayo        
-##  2 George bland           tomato      
-##  3 George medium          onions      
-##  4 Jerry  bland           mayo        
-##  5 Jerry  bland           tomato      
-##  6 Jerry  strong          chili flakes
-##  7 Sam    bland           katsup      
-##  8 Sam    bland           lettuce     
-##  9 Sam    medium          horseradish 
-## 10 Sam    medium          onions      
-## # ... with 11 more rows</code></pre>
-<pre class="r"><code>k&lt;-0
-for(nombre in cookout$Name){
-  k = k+1
-}
-print(k)</code></pre>
-<pre><code>## [1] 56</code></pre>
-<pre class="r"><code># sets up counter for names
-unique_names &lt;- unique(cookout$Name)
-n &lt;- length(unique_names) 
+</div>
+<div id="two-flavor-strengths-for-hamburgers" class="section level2">
+<h2><span class="header-section-number">1.6</span> Two flavor strengths for Hamburgers</h2>
+<pre class="r"><code>top_vec2&lt;-c() # initializes blank vector
 
-nrow(cookout) # number of rows in the cookout tibble</code></pre>
-<pre><code>## [1] 56</code></pre>
-<pre class="r"><code>top_vec&lt;-c() # initializes blank vector
+cookout_hamburger &lt;-cookout %&gt;% filter(Name %in% hamburger_names$Name) %&gt;%
+  arrange(Toppings) # sorts toppings a to z so we don&#39;t have xy yx problems.
 
-# This looping structure works for Joe/Hamburgers... now to generalize!
-for(k in 1:4){
-  for(i in (k+1):5){
-  if(cookout$Flavor.Strength[k] != cookout$Flavor.Strength[i]){
-    x &lt;- paste(cookout$Toppings[k],k,cookout$Toppings[i],i,sep=&quot;,&quot;)
-    top_vec &lt;- append(top_vec,x)
+for(k in 1:(nrow(cookout)-1)){
+  for(i in (k+1):(nrow(cookout))){
+  if(
+    (cookout$Name[k]==cookout$Name[i]) &amp;&amp; 
+    (cookout$Food.Type[k] == cookout$Food.Type[i]) &amp;&amp; 
+    (cookout$Flavor.Strength[k] != cookout$Flavor.Strength[i])
+    ){
+    z &lt;- data.frame(
+      food=c(cookout$Food.Type[k]),
+      combo=c(paste(cookout$Toppings[k],cookout$Toppings[i],sep=&quot;,&quot;)))
+    top_vec2 &lt;- rbind(top_vec2,z)
     }
   }
-}
-
-toppings_vector&lt;- top_vec %&gt;% tibble()
-toppings_vector</code></pre>
-<pre><code>## # A tibble: 7 x 1
-##   .                   
-##   &lt;chr&gt;               
-## 1 katsup,1,onions,2   
-## 2 katsup,1,hotsauce,5 
-## 3 onions,2,mayo,3     
-## 4 onions,2,lettuce,4  
-## 5 onions,2,hotsauce,5 
-## 6 mayo,3,hotsauce,5   
-## 7 lettuce,4,hotsauce,5</code></pre>
-<pre class="r"><code>cookout</code></pre>
+}</code></pre>
+</div>
+<div id="lets-look-at-our-results" class="section level2">
+<h2><span class="header-section-number">1.7</span> let’s look at our results!</h2>
+<pre class="r"><code>top_vec2 %&gt;% 
+  tibble()%&gt;% 
+  group_by(food,combo) %&gt;% 
+  summarise(count=n()) %&gt;%
+  arrange(desc(count))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;food&#39; (override with `.groups` argument)</code></pre>
+<pre><code>## # A tibble: 42 x 3
+## # Groups:   food [2]
+##     food combo                   count
+##    &lt;int&gt; &lt;chr&gt;                   &lt;int&gt;
+##  1     1 katsup,hotsauce             3
+##  2     1 katsup,chili flakes         2
+##  3     1 katsup,onions               2
+##  4     1 lettuce,hotsauce            2
+##  5     1 mayo,hotsauce               2
+##  6     1 onions,hotsauce             2
+##  7     1 onions,lettuce              2
+##  8     1 onions,mayo                 2
+##  9     2 sprinkles,cherry            2
+## 10     2 sprinkles,hot chocolate     2
+## # ... with 32 more rows</code></pre>
+<pre class="r"><code>cookout %&gt;% arrange(Toppings)</code></pre>
 <pre><code>##      Name Food.Type Flavor.Strength      Toppings
-## 1     Joe hamburger           bland        katsup
-## 2     Joe hamburger          medium        onions
-## 3     Joe hamburger           bland          mayo
-## 4     Joe hamburger           bland       lettuce
-## 5     Joe hamburger          strong      hotsauce
-## 6     Joe ice cream           bland     sprinkles
-## 7     Joe ice cream          medium hot chocolate
-## 8     Joe ice cream          strong    sour patch
-## 9     Joe ice cream          medium recees pieces
-## 10    Tom hamburger           bland        katsup
-## 11    Tom hamburger           bland          mayo
-## 12    Tom hamburger          strong  chili flakes
-## 13    Tom hamburger          strong      hotsauce
-## 14    Tom ice cream           bland     sprinkles
-## 15    Tom ice cream           bland whipped cream
-## 16    Tom ice cream          medium        cherry
-## 17    Tom ice cream          medium         oreos
-## 18    Sam hamburger           bland        katsup
-## 19    Sam hamburger          medium        onions
-## 20    Sam hamburger          medium   horseradish
-## 21    Sam hamburger           bland       lettuce
-## 22    Sam hamburger          strong      hotsauce
-## 23    Sam ice cream           bland     sprinkles
-## 24    Sam ice cream          medium hot chocolate
-## 25    Sam ice cream          medium  strawberries
-## 26    Sam ice cream          medium recees pieces
-## 27  Jerry hamburger          strong  chili flakes
-## 28  Jerry hamburger           bland          mayo
-## 29  Jerry hamburger           bland        tomato
-## 30  Jerry ice cream           bland     sprinkles
-## 31  Jerry ice cream           bland whipped cream
-## 32  Jerry ice cream          medium        cherry
-## 33  Jerry ice cream          medium         oreos
-## 34 George hamburger          medium        onions
-## 35 George hamburger           bland          mayo
-## 36 George hamburger           bland        tomato
-## 37 George ice cream          strong      warheads
-## 38 George ice cream          strong    sour patch
-## 39 George ice cream          medium        cherry
-## 40 George ice cream          medium         oreos
-## 41  Wanda hamburger           bland        tomato
-## 42  Wanda hamburger           bland        katsup
-## 43  Wanda hamburger           bland       lettuce
-## 44  Wanda hamburger          strong  chili flakes
-## 45  Wanda ice cream           bland     sprinkles
-## 46  Wanda ice cream           bland whipped cream
-## 47  Wanda ice cream          strong    sour patch
-## 48  Wanda ice cream           bland       pretzel
-## 49  Wanda ice cream          strong      warheads
-## 50  Sofia hamburger          strong      hotsauce
-## 51  Sofia hamburger          strong  chili flakes
+## 1     Tom ice cream          medium        cherry
+## 2   Jerry ice cream          medium        cherry
+## 3  George ice cream          medium        cherry
+## 4     Tom hamburger          strong  chili flakes
+## 5   Jerry hamburger          strong  chili flakes
+## 6   Wanda hamburger          strong  chili flakes
+## 7   Sofia hamburger          strong  chili flakes
+## 8     Sam hamburger          medium   horseradish
+## 9     Joe ice cream          medium hot chocolate
+## 10    Sam ice cream          medium hot chocolate
+## 11    Joe hamburger          strong      hotsauce
+## 12    Tom hamburger          strong      hotsauce
+## 13    Sam hamburger          strong      hotsauce
+## 14  Sofia hamburger          strong      hotsauce
+## 15    Joe hamburger           bland        katsup
+## 16    Tom hamburger           bland        katsup
+## 17    Sam hamburger           bland        katsup
+## 18  Wanda hamburger           bland        katsup
+## 19    Joe hamburger           bland       lettuce
+## 20    Sam hamburger           bland       lettuce
+## 21  Wanda hamburger           bland       lettuce
+## 22    Joe hamburger           bland          mayo
+## 23    Tom hamburger           bland          mayo
+## 24  Jerry hamburger           bland          mayo
+## 25 George hamburger           bland          mayo
+## 26    Joe hamburger          medium        onions
+## 27    Sam hamburger          medium        onions
+## 28 George hamburger          medium        onions
+## 29    Tom ice cream          medium         oreos
+## 30  Jerry ice cream          medium         oreos
+## 31 George ice cream          medium         oreos
+## 32  Sofia ice cream          strong    pineapples
+## 33  Wanda ice cream           bland       pretzel
+## 34    Joe ice cream          medium recees pieces
+## 35    Sam ice cream          medium recees pieces
+## 36    Joe ice cream          strong    sour patch
+## 37 George ice cream          strong    sour patch
+## 38  Wanda ice cream          strong    sour patch
+## 39  Sofia ice cream          strong    sour patch
+## 40    Joe ice cream           bland     sprinkles
+## 41    Tom ice cream           bland     sprinkles
+## 42    Sam ice cream           bland     sprinkles
+## 43  Jerry ice cream           bland     sprinkles
+## 44  Wanda ice cream           bland     sprinkles
+## 45  Sofia ice cream           bland     sprinkles
+## 46    Sam ice cream          medium  strawberries
+## 47  Jerry hamburger           bland        tomato
+## 48 George hamburger           bland        tomato
+## 49  Wanda hamburger           bland        tomato
+## 50 George ice cream          strong      warheads
+## 51  Wanda ice cream          strong      warheads
 ## 52  Sofia ice cream          strong      warheads
-## 53  Sofia ice cream          strong    sour patch
-## 54  Sofia ice cream          strong    pineapples
-## 55  Sofia ice cream           bland     sprinkles
+## 53    Tom ice cream           bland whipped cream
+## 54  Jerry ice cream           bland whipped cream
+## 55  Wanda ice cream           bland whipped cream
 ## 56  Sofia ice cream           bland whipped cream</code></pre>
+</div>
+<div id="misc-notes-and-such" class="section level2">
+<h2><span class="header-section-number">1.8</span> Misc Notes and such</h2>
+<pre class="r"><code># sets up counter for names
+# unique_names &lt;- unique(cookout$Name)
+# n &lt;- length(unique_names) 
+# nrow(cookout) # number of rows in the cookout tibble
+
+    #testing purposes
+    #x &lt;- paste(cookout$Name[k],cookout$Toppings[k],k,cookout$Toppings[i],i,sep=&quot;,&quot;)
+    #top_vec &lt;- append(top_vec,x)
+    # This will give me a vector of (food type, combos within that food type)
+    #y &lt;- paste(cookout$Food.Type[k],cookout$Toppings[k],cookout$Toppings[i],sep=&quot;,&quot;)
+    #top_vec &lt;- append(top_vec,y)
+    #let&#39;s make this a proper tibble?</code></pre>
 </div>
 </div>
 
