@@ -13,6 +13,12 @@ output:
 
 # Question 
 
+ * **For a given food type, what is the most common combination of toppings across two flavor strenghts, limited to people who have two (and only two) flavor strength preferences?**
+
+ * Video link explaining the problem:  https://youtu.be/Wu8Gf963jr8
+
+Scroll down for a peek at the data and an interpretation of the question.
+
 
 ```r
 # packages & loading data
@@ -39,9 +45,7 @@ cookout
 ## 10 Jerry  hamburger strong          chili flakes
 ## # ... with 46 more rows
 ```
- * ** Q:For a given food type, what is the most common combination of toppings across two flavor strenghts, limited to people who have two (and only two) flavor strength preferences?**
 
- * Video link explaining the problem:  https://youtu.be/Wu8Gf963jr8
  
 For instance, George prefers bland and medium hamburger toppings. His hamburger flavor combinations acros those two flavor strenghts would be:
 
