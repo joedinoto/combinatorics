@@ -1,7 +1,7 @@
 ---
 title: "Cookout Combinatorics"
 author: "Joe DiNoto"
-date: "9/27/2020"
+date: "4 Oct 2020"
 output: 
   html_document: 
     number_sections: yes
@@ -13,21 +13,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Cookout Combinatorics Problem
+# Question 
 
-## Question 
-For a given food type, what is the most common combination of toppings across two flavor strenghts, limited to people who have two (and only two) flavor strength preferences?
-
-Video link explaining the problem:  https://youtu.be/Wu8Gf963jr8
-
-## Packages & loading data
 ```{r warning=FALSE, message=FALSE}
+# packages & loading data
 library(tidyverse) 
 library(ExPanDaR) # allows for easy permutations
-# load the data
 cookout <- read.csv("cookout.csv")  # read csv file
-cookout %>% tibble() %>%  arrange(Name,Food.Type,Flavor.Strength) # convert to tibble
+cookout <- cookout %>% tibble() %>%  arrange(Name,Food.Type,Flavor.Strength) 
+cookout
 ```
+ * ** Q:For a given food type, what is the most common combination of toppings across two flavor strenghts, limited to people who have two (and only two) flavor strength preferences?**
+
+ * Video link explaining the problem:  https://youtu.be/Wu8Gf963jr8
+ 
 For instance, George prefers bland and medium hamburger toppings. His hamburger flavor combinations acros those two flavor strenghts would be:
 
  * mayo & onions
@@ -42,49 +41,38 @@ Note that mayo & tomato are not a valid combinations because they are both bland
 
 Similarly, cherry & oreos and warheads & sour patch are invalid combinations because they are within the same flavor strength.
 
+# Solution 
+
 ## use expand() to find permutations
 ```{r}
 # all unique combinations of names, food types and flavor strengths
 # nesting() outputs only combinations that already appear in the data
 flavor<- cookout %>% expand(nesting(Name, Food.Type, Flavor.Strength))
-```
 
-```{r}
 # list of names who have 2 flavor strength preferences for hamburgers
 hamburger_names <- flavor %>% filter(Food.Type == "hamburger") %>%
   count(Name, sort=TRUE) %>%
   filter(n==2) %>%
   count(Name) %>%
   select(Name)
-hamburger_names
-```
 
-```{r}
 # list of names who have 2 flavor strength preferences for ice cream
 ice_cream_names <- flavor %>% filter(Food.Type == "ice cream") %>%
   count(Name, sort=TRUE) %>%
   filter(n==2) %>%
   count(Name) %>%
   select(Name)
-ice_cream_names
-```
 
-```{r}
 #Filter the list to hamburger names with two flavor strength preferences
 hamburger_toppings <- cookout %>% 
   filter(Food.Type == "hamburger") %>%
   filter(Name %in% hamburger_names$Name)
-hamburger_toppings
-```
 
-```{r}
 # Filter the list to ice cream names with two flavor strength preferences
 ice_cream_toppings <- cookout %>%
   filter(Food.Type == "ice cream") %>%
   filter(Name %in% ice_cream_names$Name)
-ice_cream_toppings
 ```
-
 
 ## Flavor strength combinations for Hamburgers
 
@@ -109,18 +97,16 @@ for(k in 1:(nrow(hamburger_toppings)-1)){
     }
   }
 }
-
 ```
 
-## let's look at our results for hamburgers!
+## Results for hamburgers
 
 ```{r}
 top_vec2 %>% 
   tibble()%>% 
   group_by(food,combo) %>% 
   summarise(count=n()) %>%
-  arrange(desc(count)) # %>%
-  # filter(count>1) # Filter any combination that appears more than once
+  arrange(desc(count))
 ```
 
 ## Flavor strength combinations for Ice Cream
@@ -148,13 +134,12 @@ for(k in 1:(nrow(ice_cream_toppings)-1)){
 }
 ```
 
-## let's look at our results for Ice Cream!
+## Results for Ice Cream
 
 ```{r}
 top_vec2 %>% 
   tibble()%>% 
   group_by(food,combo) %>% 
   summarise(count=n()) %>%
-  arrange(desc(count)) # %>%
-  # filter(count>1) # Filter any combination that appears more than once
+  arrange(desc(count))
 ```
